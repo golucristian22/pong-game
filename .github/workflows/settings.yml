@@ -1,12 +1,13 @@
 name: Pong Game CI
 on: [push]
 jobs: 
-  runs-on: ubuntu-latest
-  steps:
-    uses: actions/checkout@v3
-    - name: Run Node Version 16
-      uses: actions/setup-node@v3
-      with: 
-        node-version: "16"
-    - run: npm run ci
-    - run: echo "This job status is ${{ job.status }}"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Node Version 16
+        uses: actions/setup-node@v3
+        with: 
+          node-version: "16"
+      - run: npm run install
+      - run: echo "This job status is ${{ job.status }}"
