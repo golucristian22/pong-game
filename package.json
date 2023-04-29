@@ -1,0 +1,23 @@
+{
+  "name": "pong-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/golucristian22/pong-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/golucristian22/pong-game/issues"
+  },
+  "homepage": "https://github.com/golucristian22/pong-game#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
