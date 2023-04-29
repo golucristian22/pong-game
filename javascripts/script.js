@@ -85,11 +85,21 @@ function renderCanvas() {
   context.fillText(score[1], 20, canvas.height / 2 - 30);
 }
 
+// Launch Ball Move Event
+function ballMoveEventEmitter() {
+  socket.emit("ballMove", {
+    ballX,
+    ballY,
+    score,
+  });
+}
+
 // Reset Ball to Center
 function ballReset() {
   ballX = width / 2;
   ballY = height / 2;
   speedY = 3;
+  ballMoveEventEmitter();
 }
 
 // Adjust Ball Movement
@@ -100,6 +110,7 @@ function ballMove() {
   if (playerMoved) {
     ballX += speedX;
   }
+  ballMoveEventEmitter();
 }
 
 // Determine What Ball Bounces Off, Score Points, Reset Ball
@@ -146,15 +157,21 @@ function ballBoundaries() {
       ballDirection = -ballDirection;
       trajectoryX[1] = ballX - (paddleX[1] + paddleDiff);
       speedX = trajectoryX[1] * 0.3;
+    } else {
+      // Reset Ball, add to Computer Score
+      ballReset();
+      score[1]++;
     }
   }
 }
 
 // Called Every Frame
 function animate() {
-  ballMove();
+  if (isReferee) {
+    ballMove();
+    ballBoundaries();
+  }
   renderCanvas();
-  ballBoundaries();
   window.requestAnimationFrame(animate);
 }
 
@@ -177,6 +194,9 @@ function startGame() {
     if (paddleX[paddleIndex] > width - paddleWidth) {
       paddleX[paddleIndex] = width - paddleWidth;
     }
+    socket.emit("paddleMove", {
+      xPosition: paddleX[paddleIndex],
+    });
     // Hide Cursor
     canvas.style.cursor = "none";
   });
@@ -194,3 +214,12 @@ socket.on("startGame", (refereeId) => {
   console.log(`The referee is ${refereeId}`);
   startGame();
 });
+
+socket.on("paddleMove", (paddleData) => {
+  const opponentPaddleIndex = 1 - paddleIndex;
+  paddleX[opponentPaddleIndex] = paddleData.xPosition;
+});
+
+socket.on("ballMove", (ballData) => {
+  ({ ballX, ballY, score } = ballData);
+})
